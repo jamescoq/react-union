@@ -5,7 +5,7 @@ Renders React widgets.
 
 <%--suppress JSUnresolvedVariable, JSUnresolvedFunction --%>
 <script type="text/javascript">
-	Liferay.Loader.require("entry-module");
+	Liferay.Loader.require("union");
 </script>
 
 <div id="${ns}hero"></div>

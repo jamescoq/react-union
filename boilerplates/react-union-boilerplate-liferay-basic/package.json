@@ -37,10 +37,12 @@
   },
   "scripts": {
     "build": "react-union-scripts build",
-    "build:liferay": "react-union-scripts build --release --target liferay && node ./tools/amdLoaderScripts.js SampleApp",
+    "build:dev": "react-union-scripts build --target liferay && yarn liferay-amd SampleApp",
+    "build:liferay": "react-union-scripts build --release --target liferay && yarn liferay-amd SampleApp --release",
     "start": "react-union-scripts start --app SampleApp",
     "start:proxy": "react-union-scripts start --app SampleApp --proxy --target liferay",
     "test": "react-union-scripts test",
+    "liferay-amd": "node ./tools/amdLoaderScripts",
     "lint": "yarn lint:eslint",
     "lint:eslint": "eslint --ext .js ./",
     "precommit": "lint-staged",

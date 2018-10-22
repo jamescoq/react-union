@@ -35,4 +35,4 @@ task copyResources(type: Copy, dependsOn: deleteResources) {
     into 'src/main/resources/META-INF/resources'
 }
 
-build.dependsOn(copyResources)
+jar.dependsOn(copyResources)

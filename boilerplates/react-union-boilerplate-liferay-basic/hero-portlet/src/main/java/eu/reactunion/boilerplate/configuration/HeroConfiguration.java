@@ -17,12 +17,14 @@ import eu.reactunion.boilerplate.constants.HeroPortletKeys;
 public interface HeroConfiguration {
 
     @Meta.AD(
-            required = true
+            required = true,
+            deflt = ""
     )
     String heading();
 
     @Meta.AD(
-            required = true
+            required = true,
+            deflt = ""
     )
     String content();
 
