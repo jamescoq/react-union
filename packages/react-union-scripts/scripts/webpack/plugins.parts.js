@@ -48,21 +48,25 @@ const analyzeBundlePlugin = () => ({
 	plugins: [new BundleAnalyzerPlugin()],
 });
 
-const uglifyJsPlugin = verbose => ({
+const uglifyJsPlugin = (verbose, { sourceMaps, uglifyOptions: { cache, parallel, mangle } }) => ({
 	optimization: {
 		minimizer: [
 			new UglifyWebpackPlugin({
+				cache,
+				parallel,
+				sourceMap: sourceMaps,
 				uglifyOptions: {
+					mangle,
+					warnings: verbose,
 					compress: {
+						comparisons: false,
 						warnings: verbose,
 					},
 					output: {
-						comments: false,
-						// https://github.com/facebookincubator/create-react-app/issues/2488
+						comments: verbose,
 						ascii_only: true,
 					},
 				},
-				sourceMap: true,
 			}),
 		],
 	},

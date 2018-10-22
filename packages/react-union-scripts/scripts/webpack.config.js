@@ -88,6 +88,7 @@ const getWebpackConfig_ = config => {
 		publicPath,
 		outputMapper,
 		mergeWebpackConfig,
+		sourceMaps,
 	} = config;
 
 	const getPackagesPathForSuffix = getPackagesPath(config);
@@ -103,14 +104,9 @@ const getWebpackConfig_ = config => {
 
 	const loadersForMonoRepo = () => getPackagesPathForSuffix('src');
 
-	const {
-		loadAsyncModules,
-		loadBabel,
-		loadCss,
-		loadScss,
-		loadImages,
-		loadFiles,
-	} = addPathsToLoaders(isMonoRepo ? loadersForMonoRepo() : loadersForUniRepo());
+	const { loadAsyncModules, loadBabel, loadCss, loadImages, loadFiles } = addPathsToLoaders(
+		isMonoRepo ? loadersForMonoRepo() : loadersForUniRepo()
+	);
 
 	const uniRepoDeps = () => require(resolveSymlink(process.cwd(), './package.json')).dependencies;
 	// TODO consider only adding deps that are intersect across the widgets and apps
@@ -145,7 +141,6 @@ const getWebpackConfig_ = config => {
 		{
 			entry: {
 				[appName]: [
-					require.resolve('babel-polyfill'),
 					...(hmr ? [require.resolve('webpack-hot-middleware/client')] : []),
 					paths.index,
 				],
@@ -162,7 +157,6 @@ const getWebpackConfig_ = config => {
 		loadAsyncModules(config),
 		loadBabel(),
 		loadCss(),
-		loadScss(cli.debug),
 		loadImages(config),
 		loadFiles(config),
 		definePlugin(GLOBALS),
@@ -183,15 +177,21 @@ const getWebpackConfig_ = config => {
 	const devWebpack = () =>
 		merge(
 			commonConfig,
+			{ devtool: 'cheap-source-map' },
 			loaderOptionsPlugin(true),
 			mergeWhen(hmr, hmrPlugin),
-			mergeWhen(generateTemplate, htmlPlugin, config, outputPath),
-			{
-				devtool: 'source-map',
-			}
+			mergeWhen(generateTemplate, htmlPlugin, config, outputPath)
 		);
 
-	const prodWebpack = () => merge(commonConfig, uglifyJsPlugin(cli.verbose));
+	const prodWebpack = () =>
+		merge(
+			commonConfig,
+			{
+				bail: true,
+				devtool: sourceMaps ? 'source-map' : false,
+			},
+			uglifyJsPlugin(cli.verbose, config)
+		);
 
 	return mergeWebpackConfig(cli.debug ? devWebpack() : prodWebpack());
 };
